@@ -67,6 +67,25 @@ public class HashElement {
 	}
 	
 	/**
+	 * Takes in a word and returns an integer hash value for the word
+	 * @param Word that needs a hashValue assigned to it
+	 * @return HashValue of word
+	 */
+	public int hashFunction() {
+		int hash = 0;
+		int u = 0;
+		int a = 0;
+		int set = 0;
+		for (int i = 0; i < word.length(); i++) {
+			u = word.charAt(i);
+			a = (int) Math.pow(2, i);
+			set = (u * a);
+			hash += set ;
+		}
+		return hash;
+	}
+	
+	/**
 	 * Overrides toString method to return a formatted string containing data
 	 */
 	public String toString() {
