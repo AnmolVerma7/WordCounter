@@ -19,7 +19,7 @@ public class WordCounterApp {
 	 * @param sizeOfTable Size
 	 * @throws FileNotFoundException
 	 */
-	private static void readTextFile(String fileName, WordCounter table, int tableSize) throws FileNotFoundException {
+	private static void readTextFile(String fileName, WordCounter table) throws FileNotFoundException {
 		File file = new File(fileName);		
 		Scanner fileReader = new Scanner(file);
 		
@@ -31,11 +31,10 @@ public class WordCounterApp {
 				
 				// Remove all punctuation and turn to lowercase
 				word = fileReader.next().replaceAll("\\p{Punct}", "").toLowerCase();
-				++totalWords;
 				
 				// Store word in HashElement
 				key = new HashElement(word);
-				
+				++totalWords;
 				table.put(key);
 			}
 		}
@@ -43,15 +42,15 @@ public class WordCounterApp {
 	}
 	
 	private static void printTableInfo(WordCounter table) {
-		System.out.println("The most common word in the table is: \"" 
+		System.out.println("\nMost common word in the table: \"" 
 				+ table.getCommonElement().getWord().toUpperCase() 
-				+ "\" with a count of: " +  table.getCommonElement().getCount());
-		System.out.println("Number of words in table:             " + totalWords);
+				+ "\" Count: " +  table.getCommonElement().getCount() + "\n");
+		System.out.println("Number of words in table: " + totalWords + "\n");
 	}
 	
 	private static void printFileInfo(WordCounter table) {
-		System.out.println("Number of distinct words in table:    " + table.getUniqueWords());
-		System.out.println("Number of words in file:              " + totalWords);
+		System.out.println("Number of distinct words in table: " + table.getUniqueWords() + "\n");
+		System.out.println("Number of words in file: " + totalWords + "\n");
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -68,17 +67,17 @@ public class WordCounterApp {
 		wordCounter = new WordCounter(tableSize);
 		input.close();
 		
-		readTextFile(filePath, wordCounter, tableSize);
-		
-		if (wordCounter.getUniqueWords() < tableSize ) {
-		
+		readTextFile(filePath, wordCounter);
+		if (tableSize >= wordCounter.getUniqueWords()) {
+			printTableInfo(wordCounter);
+			printFileInfo(wordCounter);	
 		}
-		else {
+		else{
 			System.out.println("Table size is not big enough for the amount of unique words");
-			System.exit(0);		
+			System.exit(0);	
+			
 		}
-		printTableInfo(wordCounter);
-		printFileInfo(wordCounter);	
+			
 	}
 	
 	

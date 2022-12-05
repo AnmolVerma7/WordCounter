@@ -9,10 +9,6 @@ public class WordCounter implements HashInterface<HashElement>{
 	// Size of Table
 	private int size;
 	
-	// Number Unique words
-	private int uniqueWords = 0;
-	
-	
 	/**
 	 * Constructor for Word Counter
 	 * @param TableSize given by user
@@ -35,7 +31,16 @@ public class WordCounter implements HashInterface<HashElement>{
 	 * @return Integer value of the amount of unique words
 	 */
 	public int getUniqueWords() {
-		return this.uniqueWords;
+		int count = 0;
+		for (int i = 0; i < hashTable.length; i++) {
+			if (hashTable[i] != null) {
+				count++;
+			}
+			else {
+				count += 0;
+			}
+		}
+		return count;
 	}
 	
 	/**
@@ -52,9 +57,6 @@ public class WordCounter implements HashInterface<HashElement>{
 					key = element;
 				}
 			}
-			else {
-				continue;
-			}
 		}
 		return key;
 	}
@@ -66,50 +68,63 @@ public class WordCounter implements HashInterface<HashElement>{
 	 */
 	public void put(HashElement key) {
 		int keyHashCode = getHashCode(key);
-		
 		// Map (key to keyhashCode) into table using probing
 		
 		// if element at keyHashCode is null,  add the key to the spot
 		if (hashTable[keyHashCode] == null) {
 			hashTable[keyHashCode] = key;
-			++this.uniqueWords;
+
 		}
 		// else if the element is not null...check if the word of the key matches the word of the table element 
-		else if (key.getWord().equals(hashTable[keyHashCode].getWord())) {
-			hashTable[keyHashCode].increaseCount();
-		}
-		else {
-			// Get a hashCode returned of the spot that is empty or -1 if full
-			int probedHash = probe(keyHashCode);
-			
-			// if the value is -1 table is full
-			if (probedHash == -1) {
-				return;
+		else if (hashTable[keyHashCode] != null)  {
+			if (key.getWord().equals(hashTable[keyHashCode].getWord())) {
+				hashTable[keyHashCode].increaseCount();
 			}
-			// else it finds a spot and maps key to found hashCode
 			else {
-				hashTable[probedHash] = key;
-				++this.uniqueWords;
+				 
+				probe(keyHashCode , key);
 			}
-		} 	
+		}
 	}
-	
+
 	/**
 	 * Using quadratic probing this method returns the hash value of the element or -1 if the table is full
 	 * @param keyHashCode hash value to be probed 
 	 * @return updated hashCode or -1 if table is full
 	 */
-	private int probe(int keyHashCode) {
-		int probeHash = keyHashCode;
-		for (int a = 0; a < size; a++) {
-			int i = a + 1;
-			keyHashCode = (probeHash + (i * i)) % size;
-			
-			if (hashTable[keyHashCode] == null) {
-				return keyHashCode;
+	private void probe(int keyHashCode , HashElement key) {
+		int newHashCode = 0;
+		int t = 0;
+		while (true) {
+			if (newHashCode >= size) {
+				newHashCode = 0;
+				++t;
+				newHashCode = (int) (keyHashCode + Math.pow(t, 2)) % size;
+			}
+			if (hashTable[newHashCode] == null) {
+				hashTable[newHashCode] = key;
+				break;
+			}
+			else if (hashTable[newHashCode] != null) {
+				if (key.getWord().equals(hashTable[newHashCode].getWord())) {
+					hashTable[newHashCode].increaseCount();
+					break;
+				}
+				else {
+					++t;
+					newHashCode = (int) (keyHashCode + Math.pow(t, 2)) % size;
+				}
 			}
 		}
-		return -1;
+	}
+	
+	private boolean isEmpty() {
+		for (int i = 0; i < hashTable.length; i++) {
+			if (hashTable == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
