@@ -8,8 +8,15 @@ import java.util.Scanner;
 import model.HashElement;
 import model.WordCounter;
 
+/**
+ * Counts words from text file, prints most common word, number of unique words, total number of words in table and file
+ * @author Anmol Verma
+ * @version 1.0
+ * Last Modified: <December 6th 2022> - <Generated JavaDocs> <Anmol Verma>
+ */
 public class WordCounterApp {
 	
+	// Total words in file (same as table)
 	private static int totalWords = 0;
 	
 	/**
@@ -41,18 +48,29 @@ public class WordCounterApp {
 		fileReader.close();
 	}
 	
+	/** Prints info of table: Most Common Word and Sum of Counts in table
+	 * @param table to be taken in and have info printed for
+	 */
 	private static void printTableInfo(WordCounter table) {
 		System.out.println("\nMost common word in the table: \"" 
 				+ table.getCommonElement().getWord().toUpperCase() 
 				+ "\" Count: " +  table.getCommonElement().getCount() + "\n");
-		System.out.println("Number of words in table: " + totalWords + "\n");
+		System.out.println("Sum of words in table: " + totalWords + "\n");
 	}
 	
+	/**
+	 * Prints info of file: Number of Wnique Words and Number of Words 
+	 * @param table to be take in and have info printed for
+	 */
 	private static void printFileInfo(WordCounter table) {
 		System.out.println("Number of distinct words in table: " + table.getUniqueWords() + "\n");
 		System.out.println("Number of words in file: " + totalWords + "\n");
 	}
 
+	/**
+	 * Runs program and uses all objects to make WordCounter
+	 * @throws FileNotFoundException
+	 */
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner input = new Scanner(System.in);
 		String filePath = "res/";

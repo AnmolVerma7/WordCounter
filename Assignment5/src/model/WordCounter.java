@@ -9,6 +9,8 @@ public class WordCounter implements HashInterface<HashElement>{
 	// Size of Table
 	private int size;
 	
+	// Current Size of table
+	private int currentSize = 0;
 	/**
 	 * Constructor for Word Counter
 	 * @param TableSize given by user
@@ -68,25 +70,32 @@ public class WordCounter implements HashInterface<HashElement>{
 	 */
 	public void put(HashElement key) {
 		int keyHashCode = getHashCode(key);
-		// Map (key to keyhashCode) into table using probing
 		
-		// if element at keyHashCode is null,  add the key to the spot
-		if (hashTable[keyHashCode] == null) {
-			hashTable[keyHashCode] = key;
-
-		}
-		// else if the element is not null...check if the word of the key matches the word of the table element 
-		else if (hashTable[keyHashCode] != null)  {
-			if (key.getWord().equals(hashTable[keyHashCode].getWord())) {
-				hashTable[keyHashCode].increaseCount();
+		while (true) {
+			if (hashTable[keyHashCode] == null) {
+				hashTable[keyHashCode] = key;
+				++currentSize;
+				break;
 			}
-			else {
-				 
-				probe(keyHashCode , key);
+			else if (hashTable[keyHashCode] != null)  {
+				if (key.getWord().equals(hashTable[keyHashCode].getWord())) {
+					hashTable[keyHashCode].increaseCount();
+					break;
+				}
+				else {
+					if (currentSize < size) {
+						probe(keyHashCode, key);
+						break;						
+					}
+					else  {
+						System.out.println("Unique words exceed table size.");
+						System.exit(0);
+					}
+				}
 			}
 		}
 	}
-
+	
 	/**
 	 * Using quadratic probing this method returns the hash value of the element or -1 if the table is full
 	 * @param keyHashCode hash value to be probed 
@@ -97,12 +106,12 @@ public class WordCounter implements HashInterface<HashElement>{
 		int t = 0;
 		while (true) {
 			if (newHashCode >= size) {
-				newHashCode = 0;
 				++t;
 				newHashCode = (int) (keyHashCode + Math.pow(t, 2)) % size;
 			}
 			if (hashTable[newHashCode] == null) {
 				hashTable[newHashCode] = key;
+				++currentSize;
 				break;
 			}
 			else if (hashTable[newHashCode] != null) {
@@ -111,20 +120,17 @@ public class WordCounter implements HashInterface<HashElement>{
 					break;
 				}
 				else {
-					++t;
-					newHashCode = (int) (keyHashCode + Math.pow(t, 2)) % size;
+					if (currentSize < size) {
+						++t;
+						newHashCode = (int) (keyHashCode + Math.pow(t, 2)) % size;
+					}
+					else {
+						System.out.println("table is full");
+						System.exit(0);
+					}
 				}
 			}
 		}
-	}
-	
-	private boolean isEmpty() {
-		for (int i = 0; i < hashTable.length; i++) {
-			if (hashTable == null) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	/**

@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * Interface for word counter
+ * @author Anmol Verma
+ * @param <T> Type of elements the table is going to store
+ */
 public interface HashInterface<T> {
 	
 	int getHashCode(T key);
